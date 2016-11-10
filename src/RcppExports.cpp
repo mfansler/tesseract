@@ -17,13 +17,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // tesseract_engine_internal
-TessPtr tesseract_engine_internal(Rcpp::CharacterVector datapath, const char * language);
+TessPtr tesseract_engine_internal(Rcpp::CharacterVector datapath, Rcpp::CharacterVector language);
 RcppExport SEXP tesseract_tesseract_engine_internal(SEXP datapathSEXP, SEXP languageSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type datapath(datapathSEXP);
-    Rcpp::traits::input_parameter< const char * >::type language(languageSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type language(languageSEXP);
     rcpp_result_gen = Rcpp::wrap(tesseract_engine_internal(datapath, language));
     return rcpp_result_gen;
 END_RCPP
@@ -40,7 +40,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // ocr_raw
-Rcpp::String ocr_raw(Rcpp::RawVector input, TessPtr ptr);
+Rcpp::CharacterVector ocr_raw(Rcpp::RawVector input, TessPtr ptr);
 RcppExport SEXP tesseract_ocr_raw(SEXP inputSEXP, SEXP ptrSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -52,7 +52,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // ocr_file
-Rcpp::String ocr_file(std::string file, TessPtr ptr);
+Rcpp::CharacterVector ocr_file(std::string file, TessPtr ptr);
 RcppExport SEXP tesseract_ocr_file(SEXP fileSEXP, SEXP ptrSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
