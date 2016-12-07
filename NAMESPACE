@@ -3,5 +3,7 @@
 S3method(print,tesseract)
 export(ocr)
 export(tesseract)
+export(tesseract_download)
+export(tesseract_info)
 importFrom(Rcpp,sourceCpp)
 useDynLib(tesseract)

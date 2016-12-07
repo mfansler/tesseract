@@ -6,9 +6,10 @@
 \alias{tesseract}
 \title{Tesseract OCR}
 \usage{
-ocr(image, engine = tesseract())
+ocr(image, engine = tesseract("eng"))
 
-tesseract(language = NULL, datapath = NULL, cache = TRUE)
+tesseract(language = NULL, datapath = NULL, options = NULL,
+  cache = TRUE)
 }
 \arguments{
 \item{image}{file path, url, or raw vector to image (png, tiff, jpeg, etc)}
@@ -19,6 +20,9 @@ tesseract(language = NULL, datapath = NULL, cache = TRUE)
 
 \item{datapath}{path with the training data for this language. Default uses
 the system library.}
+
+\item{options}{a named list with tesseract
+\href{http://www.sk-spell.sk.cx/tesseract-ocr-parameters-in-302-version}{engine options}}
 
 \item{cache}{use a cached version of this training data if available}
 }
@@ -54,12 +58,14 @@ news <- file.path(Sys.getenv("R_DOC_DIR"), "NEWS.pdf")
 orig <- pdf_text(news)[1]
 
 # Render pdf to jpeg/tiff image
-bitmap <- pdf_render_page(news, dpi = 300)
+bitmap <- pdf_render_page(news, dpi = 300, numeric = TRUE)
 tiff::writeTIFF(bitmap, "page.tiff")
 
 # Extract text from images
 out <- ocr("page.tiff")
 cat(out)
+
+engine <- tesseract(options = list(tessedit_char_whitelist = "0123456789"))
 }
 \references{
 \href{https://github.com/tesseract-ocr/tessdata}{Tesseract training data}

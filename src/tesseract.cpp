@@ -19,7 +19,7 @@ TessPtr tesseract_engine_internal(Rcpp::CharacterVector datapath, Rcpp::Characte
     lang = CHAR(STRING_ELT(language, 0));
   tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
   if (api->Init(path, lang))
-    throw std::runtime_error("Could not initialize tesseract");
+    throw std::runtime_error(std::string("Unable to find training data for: ") + (lang ? lang : "eng"));
   TessPtr ptr(api);
   ptr.attr("class") = Rcpp::CharacterVector::create("tesseract");
   return ptr;
@@ -30,6 +30,14 @@ tesseract::TessBaseAPI * get_engine(TessPtr engine){
   if(api == NULL)
     throw std::runtime_error("pointer is dead");
   return api;
+}
+
+// [[Rcpp::export]]
+TessPtr tesseract_engine_set_variable(TessPtr ptr, const char * name, const char * value){
+  tesseract::TessBaseAPI * api = get_engine(ptr);
+  if(!api->SetVariable(name, value))
+    throw std::runtime_error(std::string("Failed to set variable ") + name);
+  return ptr;
 }
 
 // [[Rcpp::export]]
