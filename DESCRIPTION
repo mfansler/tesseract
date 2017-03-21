@@ -1,9 +1,9 @@
 Package: tesseract
 Type: Package
 Title: Open Source OCR Engine
-Version: 1.3
+Version: 1.4
 Author: Jeroen Ooms
-Maintainer: Jeroen Ooms <jeroen.ooms@stat.ucla.edu>
+Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
 Description: An OCR engine with unicode (UTF-8) support that can recognize
     over 100 languages out of the box.
 License: MIT + file LICENSE
@@ -13,11 +13,11 @@ SystemRequirements: Tesseract >= 3.03 (libtesseract-dev /
         tesseract-devel) and Leptonica (libleptonica-dev /
         leptonica-devel). On Debian you need to install the English
         training data separately (tesseract-ocr-eng)
-Imports: Rcpp (>= 0.12.0), curl, digest
+Imports: Rcpp (>= 0.12.10), curl, digest
 LinkingTo: Rcpp
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 6.0.1
 Suggests: magick, pdftools, tiff
 NeedsCompilation: yes
-Packaged: 2016-12-07 14:54:36 UTC; jeroen
+Packaged: 2017-03-21 15:15:48 UTC; jeroen
 Repository: CRAN
-Date/Publication: 2016-12-07 16:47:15
+Date/Publication: 2017-03-21 16:16:53 UTC
