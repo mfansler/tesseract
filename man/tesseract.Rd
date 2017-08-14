@@ -39,34 +39,34 @@ training data from your distribution. For example to install the spanish trainin
 \item \href{https://apps.fedoraproject.org/packages/tesseract-langpack-spa}{tesseract-langpack-spa} (Fedora, EPEL)
 }
 
-On other platforms you can manually download training data from \href{https://github.com/tesseract-ocr/tessdata}{github}
-and store it in a path on disk that you pass in the \code{datapath} parameter. Alternatively
-you can set a default path via the \code{TESSDATA_PREFIX} environment variable.
+On Windows and MacOS you can install languages using the \link{tesseract_download} function
+which downloads training data directly from \href{https://github.com/tesseract-ocr/tessdata}{github}
+and stores it in a the path on disk given by the \code{TESSDATA_PREFIX} variable.
 }
 \examples{
 # Simple example
-text <- ocr("http://jeroen.github.io/images/testocr.png")
+text <- ocr("https://jeroen.github.io/images/testocr.png")
 cat(text)
 
-# Roundtrip test: render PDF to image and OCR it back to text
-library(pdftools)
-library(tiff)
+\dontrun{
+# Full roundtrip test: render PDF to image and OCR it back to text
+curl::curl_download("https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf", "R-intro.pdf")
+orig <- pdftools::pdf_text("R-intro.pdf")[1]
 
-# A PDF file with some text
-setwd(tempdir())
-news <- file.path(Sys.getenv("R_DOC_DIR"), "NEWS.pdf")
-orig <- pdf_text(news)[1]
+# Render pdf to png image
+img_file <- pdftools::pdf_convert("R-intro.pdf", format = 'tiff', pages = 1, dpi = 400)
 
-# Render pdf to jpeg/tiff image
-bitmap <- pdf_render_page(news, dpi = 300, numeric = TRUE)
-tiff::writeTIFF(bitmap, "page.tiff")
-
-# Extract text from images
-out <- ocr("page.tiff")
-cat(out)
+# Extract text from png image
+text <- ocr(img_file)
+unlink(img_file)
+cat(text)
+}
 
 engine <- tesseract(options = list(tessedit_char_whitelist = "0123456789"))
 }
 \references{
 \href{https://github.com/tesseract-ocr/tessdata}{Tesseract training data}
+}
+\seealso{
+Other tesseract: \code{\link{tesseract_download}}
 }

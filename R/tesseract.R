@@ -10,12 +10,13 @@
 #'  - [tesseract-ocr-spa](https://packages.debian.org/testing/tesseract-ocr-spa) (Debian, Ubuntu)
 #'  - [tesseract-langpack-spa](https://apps.fedoraproject.org/packages/tesseract-langpack-spa) (Fedora, EPEL)
 #'
-#' On other platforms you can manually download training data from [github](https://github.com/tesseract-ocr/tessdata)
-#' and store it in a path on disk that you pass in the `datapath` parameter. Alternatively
-#' you can set a default path via the `TESSDATA_PREFIX` environment variable.
+#' On Windows and MacOS you can install languages using the [tesseract_download] function
+#' which downloads training data directly from [github](https://github.com/tesseract-ocr/tessdata)
+#' and stores it in a the path on disk given by the `TESSDATA_PREFIX` variable.
 #'
 #' @export
 #' @useDynLib tesseract
+#' @family tesseract
 #' @param image file path, url, or raw vector to image (png, tiff, jpeg, etc)
 #' @param engine a tesseract engine created with `tesseract()`
 #' @rdname tesseract
@@ -23,35 +24,33 @@
 #' @aliases tesseract ocr
 #' @importFrom Rcpp sourceCpp
 #' @examples # Simple example
-#' text <- ocr("http://jeroen.github.io/images/testocr.png")
+#' text <- ocr("https://jeroen.github.io/images/testocr.png")
 #' cat(text)
 #'
-#' # Roundtrip test: render PDF to image and OCR it back to text
-#' library(pdftools)
-#' library(tiff)
+#' \dontrun{
+#' # Full roundtrip test: render PDF to image and OCR it back to text
+#' curl::curl_download("https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf", "R-intro.pdf")
+#' orig <- pdftools::pdf_text("R-intro.pdf")[1]
 #'
-#' # A PDF file with some text
-#' setwd(tempdir())
-#' news <- file.path(Sys.getenv("R_DOC_DIR"), "NEWS.pdf")
-#' orig <- pdf_text(news)[1]
+#' # Render pdf to png image
+#' img_file <- pdftools::pdf_convert("R-intro.pdf", format = 'tiff', pages = 1, dpi = 400)
 #'
-#' # Render pdf to jpeg/tiff image
-#' bitmap <- pdf_render_page(news, dpi = 300, numeric = TRUE)
-#' tiff::writeTIFF(bitmap, "page.tiff")
-#'
-#' # Extract text from images
-#' out <- ocr("page.tiff")
-#' cat(out)
+#' # Extract text from png image
+#' text <- ocr(img_file)
+#' unlink(img_file)
+#' cat(text)
+#' }
 #'
 #' engine <- tesseract(options = list(tessedit_char_whitelist = "0123456789"))
 ocr <- function(image, engine = tesseract("eng")) {
   stopifnot(inherits(engine, "tesseract"))
   if(inherits(image, "magick-image")){
-    image <- lapply(image, function(x){
-      tmp <- tempfile(fileext = ".tiff")
-      magick::image_write(x, tmp, format = "tiff")
-    })
-    vapply(image, ocr_file, character(1), ptr = engine, USE.NAMES = FALSE)
+    vapply(image, function(x){
+      tmp <- tempfile(fileext = ".png")
+      on.exit(unlink(tmp))
+      magick::image_write(x, tmp, format = 'PNG', density = "72x72")
+      ocr(tmp, engine = engine)
+    }, character(1))
   } else if(is.character(image)){
     image <- download_files(image)
     vapply(image, ocr_file, character(1), ptr = engine, USE.NAMES = FALSE)
