@@ -22,7 +22,7 @@ TessPtr tesseract_engine_internal(Rcpp::CharacterVector datapath, Rcpp::Characte
     lang = CHAR(STRING_ELT(language, 0));
   tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
   if (api->Init(path, lang))
-    throw std::runtime_error(std::string("Unable to find training data for: ") + (lang ? lang : "eng"));
+    throw std::runtime_error(std::string("Unable to find training data for: ") + (lang ? lang : "eng") + ". Please consult manual for: ?tesseract_download");
   TessPtr ptr(api);
   ptr.attr("class") = Rcpp::CharacterVector::create("tesseract");
   return ptr;
@@ -65,18 +65,11 @@ Rcpp::List engine_info_internal(TessPtr ptr){
   );
 }
 
-Rcpp::CharacterVector ocr_pix(tesseract::TessBaseAPI * api, Pix * image){
+Rcpp::String ocr_pix(tesseract::TessBaseAPI * api, Pix * image, bool HOCR){
   // Get OCR result
   api->ClearAdaptiveClassifier();
   api->SetImage(image);
-  char *outText = api->GetUTF8Text();
-
-  //meta data
-  OSResults out;
-  api->DetectOS(&out);
-  OSBestResult best = out.best_result;
-  int orientation = best.orientation_id;
-  int script = best.script_id;
+  char *outText = HOCR ? api->GetHOCRText(0) : api->GetUTF8Text();
 
   //cleanup
   pixDestroy(&image);
@@ -86,29 +79,23 @@ Rcpp::CharacterVector ocr_pix(tesseract::TessBaseAPI * api, Pix * image){
   Rcpp::String y(outText);
   y.set_encoding(CE_UTF8);
   delete [] outText;
-
-  // Output object
-  Rcpp::CharacterVector res(0);
-  res.push_back(y);
-  res.attr("orientation") = orientation;
-  res.attr("script") = script;
-  return res;
+  return y;
 }
 
 // [[Rcpp::export]]
-Rcpp::CharacterVector ocr_raw(Rcpp::RawVector input, TessPtr ptr){
+Rcpp::String ocr_raw(Rcpp::RawVector input, TessPtr ptr, bool HOCR = false){
     tesseract::TessBaseAPI *api = get_engine(ptr);
     Pix *image =  pixReadMem(input.begin(), input.length());
     if(!image)
       throw std::runtime_error("Failed to read image");
-    return ocr_pix(api, image);
+    return ocr_pix(api, image, HOCR);
 }
 
 // [[Rcpp::export]]
-Rcpp::CharacterVector ocr_file(std::string file, TessPtr ptr){
+Rcpp::String ocr_file(std::string file, TessPtr ptr, bool HOCR = false){
   tesseract::TessBaseAPI *api = get_engine(ptr);
   Pix *image =  pixRead(file.c_str());
   if(!image)
     throw std::runtime_error("Failed to read image");
-  return ocr_pix(api, image);
+  return ocr_pix(api, image, HOCR);
 }

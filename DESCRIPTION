@@ -1,7 +1,7 @@
 Package: tesseract
 Type: Package
-Title: Open Source OCR Engine for R
-Version: 1.6
+Title: Open Source OCR Engine
+Version: 1.8
 Author: Jeroen Ooms
 Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
 Description: Bindings to 'Tesseract': An OCR engine with unicode (UTF-8) support
@@ -15,9 +15,10 @@ SystemRequirements: Tesseract >= 3.03 (libtesseract-dev /
         training data separately (tesseract-ocr-eng)
 Imports: Rcpp (>= 0.12.12), curl, rappdirs, digest
 LinkingTo: Rcpp
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000
 Suggests: magick (>= 1.0), pdftools
+Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2017-08-14 16:46:23 UTC; jeroen
+Packaged: 2018-01-26 13:27:05 UTC; jeroen
 Repository: CRAN
-Date/Publication: 2017-08-14 19:01:22 UTC
+Date/Publication: 2018-01-26 13:50:09 UTC

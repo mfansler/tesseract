@@ -54,8 +54,14 @@ CXXCPP=`${R_HOME}/bin/R CMD config CXXCPP`
 CXXFLAGS=`${R_HOME}/bin/R CMD config CXXFLAGS`
 CPPFLAGS=`${R_HOME}/bin/R CMD config CPPFLAGS`
 
+# Tesseract 4 enforces C++11
+CXXSTD=`${R_HOME}/bin/R CMD config CXX11STD`
+if [ $? -ne 0 ]; then
+unset CXXSTD
+fi
+
 # Test configuration
-${CXXCPP} ${CPPFLAGS} ${PKG_CFLAGS} ${CXXFLAGS} src/test.h >/dev/null 2>&1
+${CXXCPP} ${CXXSTD} ${CPPFLAGS} ${PKG_CFLAGS} ${CXXFLAGS} src/test.h >/dev/null 2>&1
 
 # Customize the error
 if [ $? -ne 0 ]; then

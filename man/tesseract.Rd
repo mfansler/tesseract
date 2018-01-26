@@ -3,10 +3,9 @@
 \name{ocr}
 \alias{ocr}
 \alias{tesseract}
-\alias{tesseract}
 \title{Tesseract OCR}
 \usage{
-ocr(image, engine = tesseract("eng"))
+ocr(image, engine = tesseract("eng"), HOCR = FALSE)
 
 tesseract(language = NULL, datapath = NULL, options = NULL,
   cache = TRUE)
@@ -15,6 +14,8 @@ tesseract(language = NULL, datapath = NULL, options = NULL,
 \item{image}{file path, url, or raw vector to image (png, tiff, jpeg, etc)}
 
 \item{engine}{a tesseract engine created with \code{tesseract()}}
+
+\item{HOCR}{if \code{TRUE} return results as HOCR xml instead of plain text}
 
 \item{language}{string with language for training data. Usually defaults to \code{eng}}
 
@@ -32,7 +33,7 @@ are reading. Works best for images with high contrast, little noise and horizont
 }
 \details{
 Tesseract uses training data to perform OCR. Most systems default to English
-training data. To improve OCR performance for other langauges you can to install the
+training data. To improve OCR performance for other languages you can to install the
 training data from your distribution. For example to install the spanish training data:
 \itemize{
 \item \href{https://packages.debian.org/testing/tesseract-ocr-spa}{tesseract-ocr-spa} (Debian, Ubuntu)
@@ -47,6 +48,9 @@ and stores it in a the path on disk given by the \code{TESSDATA_PREFIX} variable
 # Simple example
 text <- ocr("https://jeroen.github.io/images/testocr.png")
 cat(text)
+
+xml <- ocr("https://jeroen.github.io/images/testocr.png", HOCR = TRUE)
+cat(xml)
 
 \dontrun{
 # Full roundtrip test: render PDF to image and OCR it back to text
@@ -70,3 +74,4 @@ engine <- tesseract(options = list(tessedit_char_whitelist = "0123456789"))
 \seealso{
 Other tesseract: \code{\link{tesseract_download}}
 }
+\concept{tesseract}
