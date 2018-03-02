@@ -6,6 +6,17 @@
 #' [yum](https://apps.fedoraproject.org/packages/tesseract) or
 #' [apt-get](https://packages.debian.org/search?suite=stable&section=all&arch=any&searchon=names&keywords=tesseract-ocr-).
 #'
+#' Tesseract uses training data to perform OCR. Most systems default to English
+#' training data. To improve OCR performance for other languages you can to install the
+#' training data from your distribution. For example to install the spanish training data:
+#'
+#'  - [tesseract-ocr-spa](https://packages.debian.org/testing/tesseract-ocr-spa) (Debian, Ubuntu)
+#'  - [tesseract-langpack-spa](https://apps.fedoraproject.org/packages/tesseract-langpack-spa) (Fedora, EPEL)
+#'
+#' On Windows and MacOS you can install languages using the [tesseract_download] function
+#' which downloads training data directly from [github](https://github.com/tesseract-ocr/tessdata)
+#' and stores it in a the path on disk given by the `TESSDATA_PREFIX` variable.
+#'
 #' @export
 #' @aliases tessdata
 #' @rdname tessdata
@@ -13,7 +24,7 @@
 #' @param lang three letter code for language, see [tessdata](https://github.com/tesseract-ocr/tessdata) repository.
 #' @param datapath destination directory where to download store the file
 #' @param progress print progress while downloading
-#' @references [tessdata wiki](https://github.com/tesseract-ocr/tesseract/wiki/Data-Files)
+#' @references [tesseract wiki: training data](https://github.com/tesseract-ocr/tesseract/wiki/Data-Files)
 #' @examples \dontrun{
 #' tesseract_download("fra")
 #' french <- tesseract("fra")
@@ -37,8 +48,8 @@ tesseract_download <- function(lang, datapath = NULL, progress = TRUE){
   }
   url <- sprintf('https://github.com/tesseract-ocr/%s/raw/%s/%s.traineddata', repo, release, lang)
   req <- curl::curl_fetch_memory(url, curl::new_handle(
-    noprogress = !isTRUE(progress),
-    progressfunction = progress_fun
+    progressfunction = progress_fun,
+    noprogress = !isTRUE(progress)
   ))
   if(progress)
     cat("\n")
@@ -47,14 +58,6 @@ tesseract_download <- function(lang, datapath = NULL, progress = TRUE){
   destfile <- normalizePath(file.path(datapath, basename(url)), mustWork = FALSE)
   writeBin(req$content, destfile)
   return(destfile)
-}
-
-#' @export
-#' @rdname tessdata
-tesseract_info <- function(){
-  info <- engine_info_internal(tesseract())
-  config <- tesseract_config()
-  list(datapath = info$datapath, available = info$available, version = config$version)
 }
 
 progress_fun <- function(down, up) {

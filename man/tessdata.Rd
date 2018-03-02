@@ -3,12 +3,9 @@
 \name{tesseract_download}
 \alias{tesseract_download}
 \alias{tessdata}
-\alias{tesseract_info}
 \title{Tesseract Training Data}
 \usage{
 tesseract_download(lang, datapath = NULL, progress = TRUE)
-
-tesseract_info()
 }
 \arguments{
 \item{lang}{three letter code for language, see \href{https://github.com/tesseract-ocr/tessdata}{tessdata} repository.}
@@ -24,6 +21,19 @@ Windows and OS-X. On Linux, training data can be installed directly with
 \href{https://apps.fedoraproject.org/packages/tesseract}{yum} or
 \href{https://packages.debian.org/search?suite=stable&section=all&arch=any&searchon=names&keywords=tesseract-ocr-}{apt-get}.
 }
+\details{
+Tesseract uses training data to perform OCR. Most systems default to English
+training data. To improve OCR performance for other languages you can to install the
+training data from your distribution. For example to install the spanish training data:
+\itemize{
+\item \href{https://packages.debian.org/testing/tesseract-ocr-spa}{tesseract-ocr-spa} (Debian, Ubuntu)
+\item \href{https://apps.fedoraproject.org/packages/tesseract-langpack-spa}{tesseract-langpack-spa} (Fedora, EPEL)
+}
+
+On Windows and MacOS you can install languages using the \link{tesseract_download} function
+which downloads training data directly from \href{https://github.com/tesseract-ocr/tessdata}{github}
+and stores it in a the path on disk given by the \code{TESSDATA_PREFIX} variable.
+}
 \examples{
 \dontrun{
 tesseract_download("fra")
@@ -33,9 +43,9 @@ cat(text)
 }
 }
 \references{
-\href{https://github.com/tesseract-ocr/tesseract/wiki/Data-Files}{tessdata wiki}
+\href{https://github.com/tesseract-ocr/tesseract/wiki/Data-Files}{tesseract wiki: training data}
 }
 \seealso{
-Other tesseract: \code{\link{ocr}}
+Other tesseract: \code{\link{ocr}}, \code{\link{tesseract}}
 }
 \concept{tesseract}
