@@ -1,9 +1,9 @@
 Package: tesseract
 Type: Package
 Title: Open Source OCR Engine
-Version: 2.0
+Version: 2.1
 Authors@R: person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroen@berkeley.edu",
-    comment = c(ORCID = "0000-0002-4035-02899"))
+    comment = c(ORCID = "0000-0002-4035-0289"))
 Description: Bindings to 'Tesseract' <https://opensource.google.com/projects/tesseract>: 
      a powerful optical character recognition (OCR) engine that supports over 100 languages.
      The engine is highly configurable in order to tune the detection algorithms and
@@ -24,8 +24,8 @@ Encoding: UTF-8
 VignetteBuilder: knitr
 Language: en-US
 NeedsCompilation: yes
-Packaged: 2018-03-02 16:23:24 UTC; jeroen
-Author: Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-02899>)
+Packaged: 2018-04-27 01:12:21 UTC; jeroen
+Author: Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>)
 Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
 Repository: CRAN
-Date/Publication: 2018-03-02 17:35:34 UTC
+Date/Publication: 2018-05-03 06:56:12 UTC

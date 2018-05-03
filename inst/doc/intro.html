@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2018-03-02" />
+<meta name="date" content="2018-04-27" />
 
 <title>Using the Tesseract OCR engine in R</title>
 
@@ -1470,7 +1470,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Using the Tesseract OCR engine in R</h1>
-<h4 class="date"><em>2018-03-02</em></h4>
+<h4 class="date"><em>2018-04-27</em></h4>
 
 </div>
 
@@ -1531,7 +1531,7 @@ print(results, n = 20)</code></pre>
 [1] &quot;/Users/jeroen/Library/Application Support/tesseract/tessdata/&quot;
 
 $available
-[1] &quot;fas&quot; &quot;eng&quot; &quot;nld&quot; &quot;osd&quot; &quot;fra&quot; &quot;jpn&quot;
+[1] &quot;spa&quot; &quot;eng&quot; &quot;nld&quot; &quot;kor&quot; &quot;kat&quot; &quot;osd&quot; &quot;fra&quot; &quot;jpn&quot;
 
 $version
 [1] &quot;3.05.01&quot;
@@ -1547,7 +1547,7 @@ $configs
 <pre><code>&lt;tesseract engine&gt;
  loaded: nld 
  datapath: /Users/jeroen/Library/Application Support/tesseract/tessdata/ 
- available: fas eng nld osd fra jpn </code></pre>
+ available: spa eng nld kor kat osd fra jpn </code></pre>
 <pre class="r"><code>text &lt;- ocr(&quot;https://jeroen.github.io/images/utrecht.png&quot;, engine = dutch)
 cat(text)</code></pre>
 <pre><code>Geschiedenis van de stad Utrecht
@@ -1590,9 +1590,9 @@ Nederlanden.</code></pre>
 <p>Below is an example OCR scan from an online <a href="https://courses.cs.vt.edu/csonline/AI/Lessons/VisualProcessing/OCRscans.html">AI course</a>. The code converts it to black-and-white and resizes + crops the image before feeding it to tesseract to get more accurate OCR results.</p>
 <p><img src="https://jeroen.github.io/images/bowers.jpg" alt="bowers" data-external="1" /></p>
 <pre class="r"><code>library(magick)</code></pre>
-<pre><code>Linking to ImageMagick 6.9.9.36
-Enabled features: cairo, fontconfig, freetype, lcms, pango, rsvg, webp
-Disabled features: fftw, ghostscript, x11</code></pre>
+<pre><code>Linking to ImageMagick 6.9.9.40
+Enabled features: freetype
+Disabled features: cairo, fontconfig, fftw, ghostscript, lcms, pango, rsvg, webp, x11</code></pre>
 <pre class="r"><code>input &lt;- image_read(&quot;https://jeroen.github.io/images/bowers.jpg&quot;)
 
 text &lt;- input %&gt;%
