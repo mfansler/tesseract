@@ -29,7 +29,7 @@
 #' df <- ocr_data("https://jeroen.github.io/images/testocr.png")
 #' print(df)
 #'
-#' \dontrun{
+#' \donttest{
 #' # Full roundtrip test: render PDF to image and OCR it back to text
 #' curl::curl_download("https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf", "R-intro.pdf")
 #' orig <- pdftools::pdf_text("R-intro.pdf")[1]
@@ -53,7 +53,7 @@ ocr <- function(image, engine = tesseract("eng"), HOCR = FALSE) {
       tmp <- tempfile(fileext = ".png")
       on.exit(unlink(tmp))
       magick::image_write(x, tmp, format = 'PNG', density = '300x300')
-      ocr(tmp, engine = engine)
+      ocr(tmp, engine = engine, HOCR = HOCR)
     }, character(1))
   } else if(is.character(image)){
     image <- download_files(image)

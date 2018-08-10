@@ -1,7 +1,7 @@
 Package: tesseract
 Type: Package
 Title: Open Source OCR Engine
-Version: 2.2
+Version: 2.3
 Authors@R: person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroen@berkeley.edu",
     comment = c(ORCID = "0000-0002-4035-0289"))
 Description: Bindings to 'Tesseract' <https://opensource.google.com/projects/tesseract>: 
@@ -18,14 +18,14 @@ SystemRequirements: Tesseract >= 3.03 (libtesseract-dev /
 Imports: Rcpp (>= 0.12.12), pdftools (>= 1.5), curl, rappdirs, tibble,
         digest
 LinkingTo: Rcpp
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.0
 Suggests: magick (>= 1.7), spelling, knitr, rmarkdown
 Encoding: UTF-8
 VignetteBuilder: knitr
 Language: en-US
 NeedsCompilation: yes
-Packaged: 2018-07-10 11:58:38 UTC; jeroen
+Packaged: 2018-08-10 11:48:36 UTC; jeroen
 Author: Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>)
 Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
 Repository: CRAN
-Date/Publication: 2018-07-10 12:40:03 UTC
+Date/Publication: 2018-08-10 21:50:03 UTC
