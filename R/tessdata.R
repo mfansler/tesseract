@@ -33,19 +33,19 @@
 #' cat(text)
 #' }
 tesseract_download <- function(lang, datapath = NULL, progress = interactive()){
+  stopifnot(is.character(lang))
   if(!length(datapath)){
     warn_on_linux()
     datapath <- tesseract_info()$datapath
   }
-  stopifnot(is.character(lang))
-  stopifnot(is.character(datapath))
+  datapath <- normalizePath(datapath, mustWork = TRUE)
   version <- tesseract_version_major()
   if(version < 4){
     repo <- "tessdata"
     release <- "3.04.00"
   } else {
     repo <- "tessdata_fast"
-    release <- "4.0.0-beta.1"
+    release <- "4.0.0"
   }
   url <- sprintf('https://github.com/tesseract-ocr/%s/raw/%s/%s.traineddata', repo, release, lang)
   req <- curl::curl_fetch_memory(url, curl::new_handle(
@@ -56,7 +56,7 @@ tesseract_download <- function(lang, datapath = NULL, progress = interactive()){
     cat("\n")
   if(req$status_code != 200)
     stop("Download failed: HTTP ", req$status_code, call. = FALSE)
-  destfile <- normalizePath(file.path(datapath, basename(url)), mustWork = FALSE)
+  destfile <- file.path(datapath, basename(url))
   writeBin(req$content, destfile)
   return(destfile)
 }

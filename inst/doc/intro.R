@@ -1,4 +1,5 @@
 ## ---- echo = FALSE, message = FALSE---------------------------------------------------------------
+library(tibble)
 knitr::opts_chunk$set(comment = "")
 options(width = 100, max.print = 100)
 has_nld <- "nld" %in% tesseract::tesseract_info()$available
@@ -11,17 +12,19 @@ cat(text)
 
 ## -------------------------------------------------------------------------------------------------
 results <- tesseract::ocr_data("http://jeroen.github.io/images/testocr.png", engine = eng)
-print(results, n = 20)
+results
 
 ## -------------------------------------------------------------------------------------------------
 tesseract_info()
 
 ## ---- eval=FALSE----------------------------------------------------------------------------------
+#  # Only need to do download once:
 #  tesseract_download("nld")
 
 ## ----eval = has_nld-------------------------------------------------------------------------------
+# Now load the dictionary
 (dutch <- tesseract("nld"))
-text <- ocr("https://jeroen.github.io/images/utrecht.png", engine = dutch)
+text <- ocr("https://jeroen.github.io/images/utrecht2.png", engine = dutch)
 cat(text)
 
 ## -------------------------------------------------------------------------------------------------
@@ -45,13 +48,4 @@ cat(text)
 ## -------------------------------------------------------------------------------------------------
 # List all parameters with *colour* in name or description
 tesseract_params('colour')
-
-## -------------------------------------------------------------------------------------------------
-numbers <- tesseract(options = list(tessedit_char_whitelist = "$.0123456789"))
-cat(ocr("https://jeroen.github.io/images/receipt.png", engine = numbers))
-
-## -------------------------------------------------------------------------------------------------
-# Do not allow any dollar sign 
-numbers2 <- tesseract(options = list(tessedit_char_whitelist = ".0123456789"))
-cat(ocr("https://jeroen.github.io/images/receipt.png", engine = numbers2))
 
