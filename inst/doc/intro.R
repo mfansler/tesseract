@@ -49,3 +49,15 @@ cat(text)
 # List all parameters with *colour* in name or description
 tesseract_params('colour')
 
+## -------------------------------------------------------------------------------------------------
+tesseract::tesseract_info()['version']
+
+## -------------------------------------------------------------------------------------------------
+numbers <- tesseract(options = list(tessedit_char_whitelist = "$.0123456789"))
+cat(ocr("https://jeroen.github.io/images/receipt.png", engine = numbers))
+
+## -------------------------------------------------------------------------------------------------
+# Do not allow any dollar sign 
+numbers2 <- tesseract(options = list(tessedit_char_whitelist = ".0123456789"))
+cat(ocr("https://jeroen.github.io/images/receipt.png", engine = numbers2))
+

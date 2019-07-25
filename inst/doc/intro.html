@@ -7,10 +7,11 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
-<meta name="date" content="2018-10-30" />
+<meta name="date" content="2019-07-25" />
 
 <title>Using the Tesseract OCR engine in R</title>
 
@@ -68,8 +69,6 @@ overflow: auto;
 margin-left: 2%;
 position: fixed;
 border: 1px solid #ccc;
-webkit-border-radius: 6px;
-moz-border-radius: 6px;
 border-radius: 6px;
 }
 
@@ -97,9 +96,14 @@ font-size: 12px;
 .tocify-subheader .tocify-subheader {
 text-indent: 30px;
 }
-
 .tocify-subheader .tocify-subheader .tocify-subheader {
 text-indent: 40px;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
+text-indent: 50px;
+}
+.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
+text-indent: 60px;
 }
 
 .tocify .tocify-item > a, .tocify .nav-list .nav-header {
@@ -503,13 +507,13 @@ float: none;
 
           item.append($("<a/>", {
 
-            "text": self.text()
+            "html": self.html()
 
           }));
 
         } else {
 
-          item.text(self.text());
+          item.html(self.html());
 
         }
 
@@ -1326,9 +1330,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type="text/css">
 .main-container {
@@ -1353,50 +1355,72 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
-
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -1445,8 +1469,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -1455,6 +1477,16 @@ div.tocify {
 
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -1473,7 +1505,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Using the Tesseract OCR engine in R</h1>
-<h4 class="date"><em>2018-10-30</em></h4>
+<h4 class="date">2019-07-25</h4>
 
 </div>
 
@@ -1483,7 +1515,7 @@ div.tocify {
 <div id="extract-text-from-images" class="section level2">
 <h2>Extract Text from Images</h2>
 <p>OCR is the process of finding and recognizing text inside images, for example from a screenshot, scanned paper. The image below has some example text:</p>
-<p><img src="https://jeroen.github.io/images/testocr.png" alt="test" data-external="1" /></p>
+<p><img src="https://jeroen.github.io/images/testocr.png" data-external="1" alt="test" /></p>
 <pre class="r"><code>library(tesseract)
 eng &lt;- tesseract(&quot;eng&quot;)
 text &lt;- tesseract::ocr(&quot;http://jeroen.github.io/images/testocr.png&quot;, engine = eng)
@@ -1513,7 +1545,7 @@ results</code></pre>
  8 text        96.5 374,93,427,116
  9 to          96.9 437,93,463,116
 10 test        97.0 474,93,526,116
-# ... with 50 more rows</code></pre>
+# … with 50 more rows</code></pre>
 </div>
 <div id="language-data" class="section level2">
 <h2>Language Data</h2>
@@ -1521,13 +1553,13 @@ results</code></pre>
 <p>Use <code>tesseract_info()</code> to list the languages that you currently have installed.</p>
 <pre class="r"><code>tesseract_info()</code></pre>
 <pre><code>$datapath
-[1] &quot;/usr/local/Cellar/tesseract/4.0.0/share/tessdata/&quot;
+[1] &quot;/Users/jeroen/Library/Application Support/tesseract4/tessdata/&quot;
 
 $available
-[1] &quot;deu&quot; &quot;eng&quot; &quot;fra&quot; &quot;nld&quot; &quot;osd&quot; &quot;spa&quot;
+[1] &quot;eng&quot; &quot;fra&quot; &quot;nld&quot; &quot;osd&quot; &quot;spa&quot;
 
 $version
-[1] &quot;4.0.0&quot;
+[1] &quot;4.1.0&quot;
 
 $configs
  [1] &quot;ambigs.train&quot;     &quot;api_config&quot;       &quot;bigram&quot;           &quot;box.train&quot;        &quot;box.train.stderr&quot;
@@ -1543,8 +1575,8 @@ tesseract_download(&quot;nld&quot;)</code></pre>
 (dutch &lt;- tesseract(&quot;nld&quot;))</code></pre>
 <pre><code>&lt;tesseract engine&gt;
  loaded: nld 
- datapath: /usr/local/Cellar/tesseract/4.0.0/share/tessdata/ 
- available: deu eng fra nld osd spa </code></pre>
+ datapath: /Users/jeroen/Library/Application Support/tesseract4/tessdata/ 
+ available: eng fra nld osd spa </code></pre>
 <pre class="r"><code>text &lt;- ocr(&quot;https://jeroen.github.io/images/utrecht2.png&quot;, engine = dutch)
 cat(text)</code></pre>
 <pre><code>Geschiedenis van de stad Utrecht
@@ -1585,11 +1617,11 @@ Nederlanden.</code></pre>
 <li>True imaging ninjas can use <code>image_convolve()</code> to use custom <a href="https://ropensci.org/technotes/2017/11/02/image-convolve/">convolution methods</a>.</li>
 </ul>
 <p>Below is an example OCR scan from an online <a href="https://courses.cs.vt.edu/csonline/AI/Lessons/VisualProcessing/OCRscans.html">AI course</a>. The code converts it to black-and-white and resizes + crops the image before feeding it to tesseract to get more accurate OCR results.</p>
-<p><img src="https://jeroen.github.io/images/bowers.jpg" alt="bowers" data-external="1" /></p>
+<p><img src="https://jeroen.github.io/images/bowers.jpg" data-external="1" alt="bowers" /></p>
 <pre class="r"><code>library(magick)</code></pre>
-<pre><code>Linking to ImageMagick 6.9.9.39
-Enabled features: cairo, fontconfig, freetype, lcms, pango, rsvg, webp
-Disabled features: fftw, ghostscript, x11</code></pre>
+<pre><code>Linking to ImageMagick 6.9.10.53
+Enabled features: freetype, lcms, webp
+Disabled features: cairo, fontconfig, fftw, ghostscript, pango, rsvg, x11</code></pre>
 <pre class="r"><code>input &lt;- image_read(&quot;https://jeroen.github.io/images/bowers.jpg&quot;)
 
 text &lt;- input %&gt;%
@@ -1612,7 +1644,7 @@ field is measured and its history told. In the related pursuits of
 analytical and descriptive bibliography, textual criticism, and scholarly
 editing, Fredson Bowers was such a figure, dominating the four decades
 after 1949, when his Principles of Bibliographical Description was pub-
-lished. By 1973 the period was already being called “the age of Bowers”:
+lished. By 1973 the period was already being called “the age of Bowers”’:
 in that year Norman Sanders, writing the chapter on textual scholarship
 for Stanley Wells&#39;s Shakespeare: Select Bibliographies, gave this title to
 a section of his essay. For most people, it would be achievement enough
@@ -1692,7 +1724,31 @@ tesseract_params(&#39;colour&#39;)</code></pre>
 1 editor_image_word_bb_color 7       Word bounding box colour
 2 editor_image_blob_bb_color 4       Blob bounding box colour
 3 editor_image_text_color    2       Correct text colour     </code></pre>
-<p>Note that many of the control parameters have changed between Tesseract 3 and 4, and some no longer work. One drawback of the new LSTM neural network engine in Tesseract 4 is that the recognition is more accurate but also more difficult to control.</p>
+<p>Do note that some of the control parameters have changed between Tesseract engine 3 and 4.</p>
+<pre class="r"><code>tesseract::tesseract_info()[&#39;version&#39;]</code></pre>
+<pre><code>$version
+[1] &quot;4.1.0&quot;</code></pre>
+<div id="whitelist-blacklist-characters" class="section level3">
+<h3>Whitelist / Blacklist characters</h3>
+<p>One powerful parameter is <code>tessedit_char_whitelist</code> which restricts the output to a limited set of characters. This may be useful for reading for example numbers such as a bank account, zip code, or gas meter.</p>
+<p>The whitelist parameter works for all versions of Tesseract engine 3 and also engine versions 4.1 and higher, but unfortunately it did not work in Tesseract 4.0.</p>
+<p><img src="https://jeroen.github.io/images/receipt.png" data-external="1" alt="receipt" /></p>
+<pre class="r"><code>numbers &lt;- tesseract(options = list(tessedit_char_whitelist = &quot;$.0123456789&quot;))
+cat(ocr(&quot;https://jeroen.github.io/images/receipt.png&quot;, engine = numbers))</code></pre>
+<pre><code>$90.52
+$81.52
+$9.00
+$90.52</code></pre>
+<p>To test if this actually works, look what happens if we remove the <code>$</code> from <code>tessedit_char_whitelist</code>:</p>
+<pre class="r"><code># Do not allow any dollar sign 
+numbers2 &lt;- tesseract(options = list(tessedit_char_whitelist = &quot;.0123456789&quot;))
+cat(ocr(&quot;https://jeroen.github.io/images/receipt.png&quot;, engine = numbers2))</code></pre>
+<pre><code>90.52
+81.52
+9.00
+90.52</code></pre>
+<p>Notice how this forces tesseract to detect a number (3 or 8 or 5) if we rule out the dollar sign.</p>
+</div>
 </div>
 
 
@@ -1713,6 +1769,49 @@ $(document).ready(function () {
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
