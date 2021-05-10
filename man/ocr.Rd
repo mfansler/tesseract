@@ -46,6 +46,7 @@ orig <- pdftools::pdf_text("R-intro.pdf")[1]
 
 # Render pdf to png image
 img_file <- pdftools::pdf_convert("R-intro.pdf", format = 'tiff', pages = 1, dpi = 400)
+unlink("R-intro.pdf")
 
 # Extract text from png image
 text <- ocr(img_file)
@@ -59,7 +60,8 @@ engine <- tesseract(options = list(tessedit_char_whitelist = "0123456789"))
 \href{https://github.com/tesseract-ocr/tesseract/wiki/ImproveQuality}{Tesseract: Improving Quality}
 }
 \seealso{
-Other tesseract: \code{\link{tesseract_download}},
-  \code{\link{tesseract}}
+Other tesseract: 
+\code{\link{tesseract_download}()},
+\code{\link{tesseract}()}
 }
 \concept{tesseract}

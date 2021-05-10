@@ -8,11 +8,16 @@
  * Full discussion: https://github.com/tesseract-ocr/tesseract/issues/1670
  */
 
-static tesseract::TessBaseAPI make_analyze_api(){
+/* Very old tesseract (mostly Solaris) */
+#if (defined(__sun) && defined(__SVR4))
+#define LEGACY_TESSERACT_API
+#endif
+
+static tesseract::TessBaseAPI *make_analyze_api(){
   char *old_ctype = strdup(setlocale(LC_ALL, NULL));
   setlocale(LC_ALL, "C");
-  tesseract::TessBaseAPI api;
-  api.InitForAnalysePage();
+  tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
+  api->InitForAnalysePage();
   setlocale(LC_ALL, old_ctype);
   free(old_ctype);
   return api;
@@ -20,11 +25,18 @@ static tesseract::TessBaseAPI make_analyze_api(){
 
 // [[Rcpp::export]]
 Rcpp::List tesseract_config(){
-  tesseract::TessBaseAPI api = make_analyze_api();
-  return Rcpp::List::create(
+  tesseract::TessBaseAPI *api = make_analyze_api();
+  Rcpp::List out = Rcpp::List::create(
     Rcpp::_["version"] = tesseract::TessBaseAPI::Version(),
-    Rcpp::_["path"] = api.GetDatapath()
+#ifndef LEGACY_TESSERACT_API
+    Rcpp::_["path"] = api->GetDatapath()
+#else
+    Rcpp::_["path"] = Rcpp::CharacterVector(0)
+#endif
   );
+  api->End();
+  delete api;
+  return out;
 }
 
 // [[Rcpp::export]]
@@ -77,10 +89,12 @@ TessPtr tesseract_engine_set_variable(TessPtr ptr, const char * name, const char
 // [[Rcpp::export]]
 Rcpp::LogicalVector validate_params(Rcpp::CharacterVector params){
   STRING str;
-  tesseract::TessBaseAPI api = make_analyze_api();
+  tesseract::TessBaseAPI *api = make_analyze_api();
   Rcpp::LogicalVector out(params.length());
   for(int i = 0; i < params.length(); i++)
-    out[i] = api.GetVariableAsString(params.at(i), &str);
+    out[i] = api->GetVariableAsString(params.at(i), &str);
+  api->End();
+  delete api;
   return out;
 }
 
@@ -91,14 +105,18 @@ Rcpp::List engine_info_internal(TessPtr ptr){
   api->GetAvailableLanguagesAsVector(&langs);
   Rcpp::CharacterVector available = Rcpp::CharacterVector::create();
   for(int i = 0; i < langs.length(); i++)
-    available.push_back(langs.get(i).c_str());
+    available.push_back(langs.get(i).string());
   langs.clear();
   api->GetLoadedLanguagesAsVector(&langs);
   Rcpp::CharacterVector loaded = Rcpp::CharacterVector::create();
   for(int i = 0; i < langs.length(); i++)
-    loaded.push_back(langs.get(i).c_str());
+    loaded.push_back(langs.get(i).string());
   return Rcpp::List::create(
+#ifndef LEGACY_TESSERACT_API
     Rcpp::_["datapath"] = api->GetDatapath(),
+#else
+    Rcpp::_["datapath"] = Rcpp::CharacterVector(0),
+#endif
     Rcpp::_["loaded"] = loaded,
     Rcpp::_["available"] = available
   );
@@ -106,10 +124,12 @@ Rcpp::List engine_info_internal(TessPtr ptr){
 
 // [[Rcpp::export]]
 Rcpp::String print_params(std::string filename){
-  tesseract::TessBaseAPI api = make_analyze_api();
+  tesseract::TessBaseAPI *api = make_analyze_api();
   FILE * fp = fopen(filename.c_str(), "w");
-  api.PrintVariables(fp);
+  api->PrintVariables(fp);
   fclose(fp);
+  api->End();
+  delete api;
   return filename;
 }
 
@@ -119,7 +139,7 @@ Rcpp::CharacterVector get_param_values(TessPtr ptr, Rcpp::CharacterVector params
   tesseract::TessBaseAPI * api = get_engine(ptr);
   Rcpp::CharacterVector out(params.length());
   for(int i = 0; i < params.length(); i++)
-    out[i] = api->GetVariableAsString(params.at(i), &str) ? Rcpp::String(str.c_str()) : NA_STRING;
+    out[i] = api->GetVariableAsString(params.at(i), &str) ? Rcpp::String(str.string()) : NA_STRING;
   return out;
 }
 
@@ -128,9 +148,11 @@ Rcpp::String ocr_pix(tesseract::TessBaseAPI * api, Pix * image, bool HOCR){
   api->ClearAdaptiveClassifier();
   api->SetImage(image);
 
+#ifndef LEGACY_TESSERACT_API
   // Workaround for annoying warning, see https://github.com/tesseract-ocr/tesseract/issues/756
   if(api->GetSourceYResolution() < 70)
     api->SetSourceResolution(300);
+#endif
   char *outText = HOCR ? api->GetHOCRText(0) : api->GetUTF8Text();
 
   //cleanup
@@ -166,8 +188,10 @@ Rcpp::DataFrame ocr_data_internal(tesseract::TessBaseAPI * api, Pix * image){
   api->ClearAdaptiveClassifier();
   api->SetImage(image);
 
+#ifndef LEGACY_TESSERACT_API
   if(api->GetSourceYResolution() < 70)
     api->SetSourceResolution(300);
+#endif
 
   api->Recognize(0);
   tesseract::ResultIterator* ri = api->GetIterator();

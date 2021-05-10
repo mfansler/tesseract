@@ -22,10 +22,10 @@ tesseract_info()
 #  tesseract_download("nld")
 
 ## ----eval = has_nld-------------------------------------------------------------------------------
-# Now load the dictionary
-(dutch <- tesseract("nld"))
-text <- ocr("https://jeroen.github.io/images/utrecht2.png", engine = dutch)
-cat(text)
+#  # Now load the dictionary
+#  (dutch <- tesseract("nld"))
+#  text <- ocr("https://jeroen.github.io/images/utrecht2.png", engine = dutch)
+#  cat(text)
 
 ## -------------------------------------------------------------------------------------------------
 library(magick)
