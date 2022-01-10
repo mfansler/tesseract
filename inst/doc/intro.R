@@ -1,33 +1,33 @@
-## ---- echo = FALSE, message = FALSE---------------------------------------------------------------
+## ---- echo = FALSE, message = FALSE-------------------------------------------
 library(tibble)
-knitr::opts_chunk$set(comment = "")
-options(width = 100, max.print = 100)
+#knitr::opts_chunk$set(comment = "")
 has_nld <- "nld" %in% tesseract::tesseract_info()$available
+if(identical(Sys.info()[['user']], 'jeroen')) stopifnot(has_nld)
 
-## -------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(tesseract)
 eng <- tesseract("eng")
 text <- tesseract::ocr("http://jeroen.github.io/images/testocr.png", engine = eng)
 cat(text)
 
-## -------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 results <- tesseract::ocr_data("http://jeroen.github.io/images/testocr.png", engine = eng)
 results
 
-## -------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 tesseract_info()
 
-## ---- eval=FALSE----------------------------------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  # Only need to do download once:
 #  tesseract_download("nld")
 
-## ----eval = has_nld-------------------------------------------------------------------------------
-#  # Now load the dictionary
-#  (dutch <- tesseract("nld"))
-#  text <- ocr("https://jeroen.github.io/images/utrecht2.png", engine = dutch)
-#  cat(text)
+## ----eval = has_nld-----------------------------------------------------------
+# Now load the dictionary
+(dutch <- tesseract("nld"))
+text <- ocr("https://jeroen.github.io/images/utrecht2.png", engine = dutch)
+cat(text)
 
-## -------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(magick)
 input <- image_read("https://jeroen.github.io/images/bowers.jpg")
 
@@ -40,23 +40,23 @@ text <- input %>%
 
 cat(text)
 
-## ---- eval=require(pdftools)----------------------------------------------------------------------
+## ---- eval=require(pdftools)--------------------------------------------------
 pngfile <- pdftools::pdf_convert('https://jeroen.github.io/images/ocrscan.pdf', dpi = 600)
 text <- tesseract::ocr(pngfile)
 cat(text)
 
-## -------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 # List all parameters with *colour* in name or description
 tesseract_params('colour')
 
-## -------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 tesseract::tesseract_info()['version']
 
-## -------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 numbers <- tesseract(options = list(tessedit_char_whitelist = "$.0123456789"))
 cat(ocr("https://jeroen.github.io/images/receipt.png", engine = numbers))
 
-## -------------------------------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 # Do not allow any dollar sign 
 numbers2 <- tesseract(options = list(tessedit_char_whitelist = ".0123456789"))
 cat(ocr("https://jeroen.github.io/images/receipt.png", engine = numbers2))

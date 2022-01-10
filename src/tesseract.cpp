@@ -8,25 +8,26 @@
 #define getorat at
 #endif
 
-/* NB: libtesseract now insists that the engine is initiated in 'C' locale.
+/* libtesseract 4.0 insisted that the engine is initiated in 'C' locale.
  * We do this as exemplified in the example code in the libc manual:
  * https://www.gnu.org/software/libc/manual/html_node/Setting-the-Locale.html
- * Hopefully this is temporary and it will be fixed upstream.
  * Full discussion: https://github.com/tesseract-ocr/tesseract/issues/1670
  */
-
-/* Very old tesseract (mostly Solaris) */
-#if (defined(__sun) && defined(__SVR4))
-#define LEGACY_TESSERACT_API
+#if TESSERACT_MAJOR_VERSION == 4 && TESSERACT_MINOR_VERSION == 0
+#define TESSERACT40
 #endif
 
 static tesseract::TessBaseAPI *make_analyze_api(){
+#ifdef TESSERACT40
   char *old_ctype = strdup(setlocale(LC_ALL, NULL));
   setlocale(LC_ALL, "C");
+#endif
   tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
   api->InitForAnalysePage();
+#ifdef TESSERACT40
   setlocale(LC_ALL, old_ctype);
   free(old_ctype);
+#endif
   return api;
 }
 
@@ -35,11 +36,7 @@ Rcpp::List tesseract_config(){
   tesseract::TessBaseAPI *api = make_analyze_api();
   Rcpp::List out = Rcpp::List::create(
     Rcpp::_["version"] = tesseract::TessBaseAPI::Version(),
-#ifndef LEGACY_TESSERACT_API
     Rcpp::_["path"] = api->GetDatapath()
-#else
-    Rcpp::_["path"] = Rcpp::CharacterVector(0)
-#endif
   );
   api->End();
   delete api;
@@ -63,12 +60,16 @@ TessPtr tesseract_engine_internal(Rcpp::CharacterVector datapath, Rcpp::Characte
     params.push_back(std::string(opt_names.at(i)).c_str());
     values.push_back(std::string(opt_values.at(i)).c_str());
   }
+#ifdef TESSERACT40
   char *old_ctype = strdup(setlocale(LC_ALL, NULL));
   setlocale(LC_ALL, "C");
+#endif
   tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
   int err = api->Init(path, lang, tesseract::OEM_DEFAULT, configs, confpaths.length(), &params, &values, false);
+#ifdef TESSERACT40
   setlocale(LC_ALL, old_ctype);
   free(old_ctype);
+#endif
   if(err){
     delete api;
     throw std::runtime_error(std::string("Unable to find training data for: ") + (lang ? lang : "eng") + ". Please consult manual for: ?tesseract_download");
@@ -111,19 +112,15 @@ Rcpp::List engine_info_internal(TessPtr ptr){
   GenericVector<STRING> langs;
   api->GetAvailableLanguagesAsVector(&langs);
   Rcpp::CharacterVector available = Rcpp::CharacterVector::create();
-  for(int i = 0; i < langs.size(); i++)
+  for(size_t i = 0; i < langs.size(); i++)
     available.push_back(langs.getorat(i).c_str());
   langs.clear();
   api->GetLoadedLanguagesAsVector(&langs);
   Rcpp::CharacterVector loaded = Rcpp::CharacterVector::create();
-  for(int i = 0; i < langs.size(); i++)
+  for(size_t i = 0; i < langs.size(); i++)
     loaded.push_back(langs.getorat(i).c_str());
   return Rcpp::List::create(
-#ifndef LEGACY_TESSERACT_API
     Rcpp::_["datapath"] = api->GetDatapath(),
-#else
-    Rcpp::_["datapath"] = Rcpp::CharacterVector(0),
-#endif
     Rcpp::_["loaded"] = loaded,
     Rcpp::_["available"] = available
   );
@@ -155,11 +152,9 @@ Rcpp::String ocr_pix(tesseract::TessBaseAPI * api, Pix * image, bool HOCR){
   api->ClearAdaptiveClassifier();
   api->SetImage(image);
 
-#ifndef LEGACY_TESSERACT_API
   // Workaround for annoying warning, see https://github.com/tesseract-ocr/tesseract/issues/756
   if(api->GetSourceYResolution() < 70)
     api->SetSourceResolution(300);
-#endif
   char *outText = HOCR ? api->GetHOCRText(0) : api->GetUTF8Text();
 
   //cleanup
@@ -194,12 +189,8 @@ Rcpp::String ocr_file(std::string file, TessPtr ptr, bool HOCR = false){
 Rcpp::DataFrame ocr_data_internal(tesseract::TessBaseAPI * api, Pix * image){
   api->ClearAdaptiveClassifier();
   api->SetImage(image);
-
-#ifndef LEGACY_TESSERACT_API
   if(api->GetSourceYResolution() < 70)
     api->SetSourceResolution(300);
-#endif
-
   api->Recognize(0);
   tesseract::ResultIterator* ri = api->GetIterator();
   tesseract::PageIteratorLevel level = tesseract::RIL_WORD;
