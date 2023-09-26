@@ -3,6 +3,9 @@ library(tibble)
 #knitr::opts_chunk$set(comment = "")
 has_nld <- "nld" %in% tesseract::tesseract_info()$available
 if(identical(Sys.info()[['user']], 'jeroen')) stopifnot(has_nld)
+if(grepl('tesseract.Rcheck', getwd())){
+  Sys.sleep(10) #workaround for CPU time check
+}
 
 ## -----------------------------------------------------------------------------
 library(tesseract)
