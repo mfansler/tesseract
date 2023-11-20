@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2023-09-26" />
+<meta name="date" content="2023-11-20" />
 
 <title>Using the Tesseract OCR engine in R</title>
 
@@ -1479,7 +1479,7 @@ border-radius: 0px;
 
 
 <h1 class="title toc-ignore">Using the Tesseract OCR engine in R</h1>
-<h4 class="date">2023-09-26</h4>
+<h4 class="date">2023-11-20</h4>
 
 </div>
 
@@ -1548,7 +1548,7 @@ currently have installed.</p>
 ## [1] &quot;eng&quot; &quot;nld&quot; &quot;osd&quot;
 ## 
 ## $version
-## [1] &quot;5.3.2&quot;
+## [1] &quot;5.3.3&quot;
 ## 
 ## $configs
 ##  [1] &quot;alto&quot;             &quot;ambigs.train&quot;     &quot;api_config&quot;       &quot;bigram&quot;          
@@ -1630,13 +1630,12 @@ and reducing artifacts.</li>
 custom <a href="https://ropensci.org/technotes/2017/11/02/image-convolve/">convolution
 methods</a>.</li>
 </ul>
-<p>Below is an example OCR scan from an online <a href="https://courses.cs.vt.edu/csonline/AI/Lessons/VisualProcessing/OCRscans.html">AI
-course</a>. The code converts it to black-and-white and resizes + crops
-the image before feeding it to tesseract to get more accurate OCR
-results.</p>
+<p>Below is an example OCR scan. The code converts it to black-and-white
+and resizes + crops the image before feeding it to tesseract to get more
+accurate OCR results.</p>
 <p><img src="https://jeroen.github.io/images/bowers.jpg" data-external="1" alt="bowers" /></p>
 <pre class="r"><code>library(magick)</code></pre>
-<pre><code>## Linking to ImageMagick 6.9.12.93
+<pre><code>## Linking to ImageMagick 6.9.12.98
 ## Enabled features: fontconfig, freetype, ghostscript, lcms, webp
 ## Disabled features: cairo, fftw, heic, pango, raw, rsvg, x11</code></pre>
 <pre class="r"><code>input &lt;- image_read(&quot;https://jeroen.github.io/images/bowers.jpg&quot;)
@@ -1751,7 +1750,7 @@ tesseract_params(&#39;colour&#39;)</code></pre>
 Tesseract engine 3 and 4.</p>
 <pre class="r"><code>tesseract::tesseract_info()[&#39;version&#39;]</code></pre>
 <pre><code>## $version
-## [1] &quot;5.3.2&quot;</code></pre>
+## [1] &quot;5.3.3&quot;</code></pre>
 <div id="whitelist-blacklist-characters" class="section level3">
 <h3>Whitelist / Blacklist characters</h3>
 <p>One powerful parameter is <code>tessedit_char_whitelist</code> which

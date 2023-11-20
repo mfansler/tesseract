@@ -1,4 +1,4 @@
-## ---- echo = FALSE, message = FALSE-------------------------------------------
+## ----echo = FALSE, message = FALSE--------------------------------------------
 library(tibble)
 #knitr::opts_chunk$set(comment = "")
 has_nld <- "nld" %in% tesseract::tesseract_info()$available
@@ -20,7 +20,7 @@ results
 ## -----------------------------------------------------------------------------
 tesseract_info()
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  # Only need to do download once:
 #  tesseract_download("nld")
 
@@ -43,7 +43,7 @@ text <- input %>%
 
 cat(text)
 
-## ---- eval=require(pdftools)--------------------------------------------------
+## ----eval=require(pdftools)---------------------------------------------------
 pngfile <- pdftools::pdf_convert('https://jeroen.github.io/images/ocrscan.pdf', dpi = 600)
 text <- tesseract::ocr(pngfile)
 cat(text)
