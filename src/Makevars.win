@@ -6,7 +6,7 @@ PKG_LIBS = \
 	-L${RWINLIB}/lib \
 	-ltesseract -lleptonica \
 	-ltiff -lopenjp2 -lwebp -lsharpyuv -ljpeg -lgif -lpng16 -lz \
-	-lws2_32
+	-lws2_32 -pthread
 
 all: clean winlibs
 
